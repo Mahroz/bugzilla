@@ -1,11 +1,12 @@
 class ProjectsController < ApplicationController
   before_action :is_user_logged_in
   before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :is_user_verified, only: [:ne, :edit, :update, :destroy, :manage]
 
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.where( manager_id: current_user.id )
   end
 
   # GET /projects/1
@@ -15,7 +16,6 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    is_user_verified
     @project = Project.new
   end
 
@@ -23,6 +23,21 @@ class ProjectsController < ApplicationController
   def edit
   end
 
+
+  def manage
+    id =  to_number(params[:id])
+    if id < 1
+      redirect_to projects_url
+    end
+    @users = Project.associated_users.all
+  end
+
+  #Converts a string to number appropriately
+  def to_number(string)
+    Integer(string || '')
+  rescue ArgumentError
+    0
+  end
   # POST /projects
   # POST /projects.json
   def create
