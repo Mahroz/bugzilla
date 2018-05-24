@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
-  def new
+  def index
+    redirect_to projects_url
   end
 end
