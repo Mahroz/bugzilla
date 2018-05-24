@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_action :is_user_logged_in
   before_action :set_project, only: [:show, :edit, :update, :destroy]
 
   # GET /projects
@@ -14,6 +15,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
+    is_user_verified
     @project = Project.new
   end
 
@@ -25,7 +27,7 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(project_params)
-
+    @project.manager_id = current_user.id
     respond_to do |format|
       if @project.save
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
@@ -69,6 +71,18 @@ class ProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:title, :description, :manager_id, :start_date)
+      params.require(:project).permit(:title, :description, :start_date)
+    end
+
+    def is_user_verified
+      if current_user.user_type != 0
+        redirect_to projects_url, notice: 'You do not have access to create new projects.'
+      end
+    end
+
+    def is_user_logged_in
+      unless user_signed_in?
+        redirect_to new_user_session_path
+      end
     end
 end
