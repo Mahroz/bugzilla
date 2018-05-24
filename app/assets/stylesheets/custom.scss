@@ -2,7 +2,7 @@
 @import "bootstrap";
 /* universal */
 body {
-padding-top: 60px;
+padding: 60px;
 }
 section {
 overflow: auto;
@@ -52,4 +52,39 @@ list-style: none;
 footer ul li {
 float: left;
 margin-left: 15px;
+}
+.site-content{
+  text-align:center;
+}
+form{
+  width:350px;
+  margin: auto;
+  text-align: center;
+  margin-top:30px;
+}
+label{
+  float: left;
+  margin-left: 40px;
+}
+input[type=text], input[type=email] , input[type=password] , input[type=submit] , select {
+    margin-bottom: 10px;
+    min-width:280px;
+    text-align:left;
+}
+input[type=submit]{text-align:center; margin-top:20px;}
+.site-content{
+  margin:auto;
+  text-align:center;
+}
+.remember_me_check{
+  margin:auto !important;
+  margin-left:-180px !important;
+}
+#error_explanation {
+    font-size: 14px;
+    color: #CE0000;
+}
+#error_explanation h2 {
+    font-size: 14px;
+    font-weight: bold;
 }
