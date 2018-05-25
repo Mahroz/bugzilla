@@ -25,10 +25,12 @@ margin-bottom: 10px;
   letter-spacing: -1px;
   padding-top: 9px;
   font-weight: bold;
+  margin-top: 7px;
 }
 #logo:hover {
   color: #fff;
   text-decoration: none;
+  background-color:transparent;
 }
 footer {
 margin-top: 45px;
@@ -53,6 +55,24 @@ footer ul li {
 float: left;
 margin-left: 15px;
 }
+.btn{color:#fff !important;}
+.btn a{color:#fff !important;}
+.btn a:hover{
+  color: #fff;
+  text-decoration: none;
+  background-color:transparent;
+  }
+.text-bold{font-weight:bold;}
+th {
+    padding: 10px 10px 10px 5px;
+    font-size: 14px;
+    border-bottom: 1px solid #c0c0c0;
+}
+tr {
+
+    border-top: 10px solid #fff;
+
+}
 .site-content{
   text-align:center;
 }
@@ -66,7 +86,7 @@ label{
   float: left;
   margin-left: 40px;
 }
-input[type=text], input[type=email] , input[type=password] , input[type=submit] , select {
+textarea, input[type=text], input[type=email] , input[type=password] , input[type=submit] , select {
     margin-bottom: 10px;
     min-width:280px;
     text-align:left;
@@ -88,3 +108,29 @@ input[type=submit]{text-align:center; margin-top:20px;}
     font-size: 14px;
     font-weight: bold;
 }
+
+#notice{
+  color: #3e3e3e !important;
+  font-weight: bold;
+  padding: 8px 10px 10px 15px;
+  border-radius: 7px;
+  -webkit-animation-name: popup; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+  animation-name: popup;
+  animation-duration: 2s;
+}
+.text-top{
+  vertical-align: text-top;
+}
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes popup {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* Standard syntax */
+@keyframes popup {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+

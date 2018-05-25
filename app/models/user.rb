@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Filterable
+
   has_many :projects, :class_name => 'Project', :foreign_key => 'manager_id'
   has_many :associated_projects, :class_name => 'ProjectUser'
   has_many :projects, :through => :associated_projects
@@ -9,4 +11,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+
+
+  scope :search_user, -> (name) { where("user_type != 0 and name like ?", "#{name}%")}
 end
