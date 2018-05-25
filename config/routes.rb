@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :projects
   get '/users/', to: 'users#index'
   get '/projects/:id/manage-members', to: 'projects#manage'
+  post '/projects/:id/add-members', to: 'projects#addUserToProject'
+  get '/search-users/:name', to: 'users#search'
   get '/error', to: 'error#notFound'
   get '/not-developed', to: 'error#notDeveloped'
 

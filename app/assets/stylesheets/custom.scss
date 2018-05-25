@@ -119,7 +119,9 @@ input[type=submit]{text-align:center; margin-top:20px;}
   animation-name: popup;
   animation-duration: 2s;
 }
-
+.text-top{
+  vertical-align: text-top;
+}
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes popup {
     from {opacity: 0;}
@@ -131,3 +133,4 @@ input[type=submit]{text-align:center; margin-top:20px;}
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
