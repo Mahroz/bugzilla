@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   get 'bugs/add'
-  get '/bugs/new' , to: 'projects#index'
+  get '/my-bugs' , to: 'bugs#index'
+  get '/bugs/new' , to: 'bugs#goToProjectsIndex'
+  get '/bugs/all-bugs' , to: 'bugs#goToProjectsIndex'
+  get '/bugs/my-bugs' , to: 'bugs#goToProjectsIndex'
+  get '/bugs/new-bugs' , to: 'bugs#goToProjectsIndex'
   resources :bugs
   get '/users/password/new', to: 'error#notDeveloped'
   get 'projects/index'
@@ -18,6 +22,12 @@ Rails.application.routes.draw do
 
   get '/projects/:id/report-bugs', to: 'bugs#new'
   post '/projects/:id/create-bug', to: 'bugs#create'
+  get '/projects/:id/all-bugs', to: 'bugs#allBugs'
+  get '/projects/:id/new-bugs', to: 'bugs#newBugs'
+  get '/projects/:id/my-bugs', to: 'bugs#myBugs'
+
+  post '/projects/:id/assign-bug', to: 'bugs#assignBug'
+  post '/projects/:id/mark-bug', to: 'bugs#markBug'
 
   get '*all', to: 'error#notFound', constraints: lambda { |req|
     req.path.exclude? 'rails/active_storage'
