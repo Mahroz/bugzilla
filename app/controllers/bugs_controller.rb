@@ -154,8 +154,16 @@ class BugsController < ApplicationController
       @project_id = to_number(params[:id])
       if @project_id < 1
         redirect_to projects_url
-      elsif !ProjectUser.where(project_id: @project_id, user_id: current_user.id).exists?
-        redirect_to projects_url
+      else
+        if current_user.user_type == 0
+          if !Project.where(id: @project_id, manager_id: current_user.id).exists?
+            redirect_to projects_url
+          end
+        elsif current_user.user_type == 1
+          if !ProjectUser.where(project_id: @project_id, user_id: current_user.id).exists?
+            redirect_to projects_url
+          end
+        end
       end
     end
 

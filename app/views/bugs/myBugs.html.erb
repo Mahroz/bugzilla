@@ -45,7 +45,9 @@
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
         <td>
-          <input type="button" class="btn btn-xs btn-info" value="Mark <%= @typeStatusName%>" onclick="markBug(<%= bug.id %>)">
+          <% if bug.status != 2 %>
+            <input type="button" class="btn btn-xs btn-info" value="Mark <%= @typeStatusName%>" onclick="markBug(<%= bug.id %>)">
+          <% end %>
         </td>
       </tr>
     <% end %>
