@@ -1,13 +1,36 @@
 class ProjectsController < ApplicationController
   before_action :is_user_logged_in
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-  before_action :is_user_verified, only: [:new, :edit, :update, :destroy, :manage, :addUserToProject]
-  skip_before_action :verify_authenticity_token, only: [:addUserToProject]
+  before_action :is_user_verified, only: [:new, :edit, :update, :destroy, :manage, :addUserToProject, :removeUserFromProject]
+  before_action :is_user_authorized, only: [:edit, :update, :destroy, :manage, :addUserToProject, :removeUserFromProject]
+  skip_before_action :verify_authenticity_token, only: [:addUserToProject , :removeUserFromProject]
 
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.where( manager_id: current_user.id )
+    if current_user.user_type == 0
+      @projects = Project.where( manager_id: current_user.id )
+    elsif current_user.user_type == 1
+      @projects = Project.joins("INNER JOIN project_users ON project_users.project_id = projects.id AND project_users.user_id = '"+current_user.id.to_s+"'")
+    elsif current_user.user_type == 2
+      @projects = Project.all
+    end
+  end
+
+  def index_old
+    if current_user.user_type == 0
+      @projects = Project.where( manager_id: current_user.id )
+    elsif current_user.user_type == 1
+      developer_index
+    elsif current_user.user_type == 2
+      qa_index
+    end
+  end
+
+  def developer_index
+  end
+
+  def developer_index
   end
 
   # GET /projects/1
@@ -29,9 +52,9 @@ class ProjectsController < ApplicationController
     userId = params[:userId]
     id = params[:id]
     if id != projectId
-      render json: { code: false, reason: "Invalid request 1." }
+      render json: { code: false, reason: "Invalid request." }
     elsif Project.find(id).manager_id != current_user.id
-      render json: { code: false, reason: "Invalid request 2." }
+      render json: { code: false, reason: "Invalid request." }
     elsif ProjectUser.where(project_id: projectId, user_id: userId).exists?
       render json: { code: false, reason: "This user is already added to this project." }
     else
@@ -48,18 +71,32 @@ class ProjectsController < ApplicationController
   end
 
 
+  def removeUserFromProject
+    projectId = params[:projectId]
+    userId = params[:userId]
+    id = params[:id]
+    if id != projectId
+      render json: { code: false, reason: "Invalid request." }
+    elsif Project.find(id).manager_id != current_user.id
+      render json: { code: false, reason: "Invalid request." }
+    else
+      ProjectUser.where(project_id: projectId, user_id: userId).delete_all
+      if ProjectUser.where(project_id: projectId, user_id: userId).exists?
+        render json: { code: false, reason: "Something went wrong. Please try again." }
+      else
+        render json: { code: true, reason: "User removed successfully."}
+      end
+    end
+  end
+
+
   def manage
     id =  to_number(params[:id])
     if id < 1
       redirect_to projects_url
     end
-    #params = {:starts_with => "Test User Edited"}
-    #@users = User.filter(params)
-    #@users = ProjectUser.all
-  end
-
-  def title_filter(string)
-
+    @developers = User.joins("INNER JOIN project_users ON project_users.user_id = users.id AND users.user_type='1' AND project_users.project_id = '"+id.to_s+"'")
+    @qas = User.joins("INNER JOIN project_users ON project_users.user_id = users.id AND users.user_type='2' AND project_users.project_id = '"+id.to_s+"'")
   end
 
   #Converts a string to number appropriately
@@ -75,7 +112,7 @@ class ProjectsController < ApplicationController
     @project.manager_id = current_user.id
     respond_to do |format|
       if @project.save
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.html { redirect_to projects_url, notice: 'Project was successfully created.' }
         format.json { render :show, status: :created, location: @project }
       else
         format.html { render :new }
@@ -101,6 +138,7 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1
   # DELETE /projects/1.json
   def destroy
+    ProjectUser.where(project_id: @project.id).delete_all
     @project.destroy
     respond_to do |format|
       format.html { redirect_to projects_url, notice: 'Project was successfully destroyed.' }
@@ -122,7 +160,11 @@ class ProjectsController < ApplicationController
     def is_user_verified
       if current_user.user_type != 0
         redirect_to projects_url, notice: 'You do not have access to create new projects.'
-      elsif Project.find(params[:id]).manager_id != current_user.id
+      end
+    end
+
+    def is_user_authorized
+      if Project.find(params[:id]).manager_id != current_user.id
         redirect_to projects_url, notice: 'You do not have access to this projects.'
       end
     end
