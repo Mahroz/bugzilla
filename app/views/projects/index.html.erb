@@ -39,7 +39,7 @@
             </td>
           <% elsif current_user.user_type == 2 %>
             <td>
-              <%= link_to 'Report Bug', edit_project_path(project), {:class => "btn btn-warning btn-xs"} %>
+              <%= link_to 'Report Bug', "projects/"+project.id.to_s+"/report-bugs", {:class => "btn btn-warning btn-xs"} %>
             </td>
           <% end %>
         </tr>

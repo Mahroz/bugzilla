@@ -4,7 +4,7 @@ class CreateBugs < ActiveRecord::Migration[5.2]
       t.string :title
       t.datetime :deadline
       t.string :image
-      t.integer :type
+      t.integer :issue_type
       t.integer :status
       t.integer :project_id
       t.integer :creator_id

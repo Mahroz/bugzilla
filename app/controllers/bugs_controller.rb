@@ -1,6 +1,6 @@
 class BugsController < ApplicationController
   before_action :set_bug, only: [:show, :edit, :update, :destroy]
-
+  skip_before_action :verify_authenticity_token, only: [:create]
   # GET /bugs
   # GET /bugs.json
   def index
@@ -25,6 +25,8 @@ class BugsController < ApplicationController
   # POST /bugs.json
   def create
     @bug = Bug.new(bug_params)
+    @bug.creator_id = current_user.id
+    @bug.project_id = params[:id]
 
     respond_to do |format|
       if @bug.save
@@ -69,6 +71,6 @@ class BugsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bug_params
-      params.require(:bug).permit(:title, :deadline, :image, :type, :status, :project_id, :creator_id, :developer_id)
+      params.require(:bug).permit(:title, :deadline, :issue_type, :status, :bug_image)
     end
 end

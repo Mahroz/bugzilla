@@ -1,5 +1,50 @@
-<h1>New Bug</h1>
+<div class="site-content">
+<h3>Report New Bug/Feature</h3>
 
-<%= render 'form', bug: @bug %>
+<%= form_with(model: @bug, local: true, multipart: true , :url => "create-bug") do |form| %>
+  <% if @bug.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bug.errors.count, "error") %> prohibited this bug from being saved:</h2>
+
+      <ul>
+      <% @bug.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :deadline %>
+    <%= form.datetime_select :deadline %>
+  </div>
+
+  <div class="field image-field">
+    <%= form.label :bug_image %>
+    <%= form.file_field :bug_image, accept: '.png, .gif' %>
+  </div>
+
+  <div class="field long-select">
+    <%= form.label :issue_type %>
+    <%= form.select :issue_type , options_for_select([["Bug", 0], ["Feature", 1]])  %>
+  </div>
+
+  <div class="field long-select">
+    <%= form.label :status %>
+    <%= form.select :status , options_for_select([["New", 0], ["Started", 1], ["Resolved", 2]])  %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
 
 <%= link_to 'Back', bugs_path %>
+</div>
+
+<%= @bug.inspect%>
