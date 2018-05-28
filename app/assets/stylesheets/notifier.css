@@ -1,0 +1,13 @@
+.notifier {
+  display: none;
+  position: absolute;
+  bottom: 50px;
+  right: 20px;
+  font-size: 13px;
+  background-color: #89ffb4;
+  border: 1px solid #8accca;
+  color: #545454;
+  padding: 25px 35px;
+  border-radius: 5px;
+  z-index: 1500;
+}

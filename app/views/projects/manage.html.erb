@@ -8,4 +8,24 @@
 </div>
 
 <div>
+  <h3>Project Users</h3>
+  <div class="display-users-wrap">
+    <h4>Developers</h4>
+    <% @developers.each do |dev|%>
+      <div class="project-user" id="project-user-<%= dev.id %>">
+        <%= dev.name %>
+        <button class="btn btn-danger btn-xs remove-button" onclick="removeMember(<%= dev.id %>)">Remove</button>
+      </div>
+    <% end%>
+  </div>
+
+  <div class="display-users-wrap">
+    <h4>QAs</h4>
+    <% @qas.each do |qa|%>
+      <div class="project-user" id="project-user-<%= qa.id %>">
+        <%= qa.name %>
+        <button class="btn btn-danger btn-xs remove-button" onclick="removeMember(<%= qa.id %>)">Remove</button>
+      </div>
+    <% end%>
+  </div>
 </div>

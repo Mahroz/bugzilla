@@ -29,8 +29,9 @@ function DelayedSubmission_Check() {
                   var hintString = "<ul id='hintSelect'>";
                   for(var i =0 ; i < userData.length ; i++){
                     var type = "developer";
-                    if(userData[i].user_type == 2){type = "qa";}
-                      hintString += "<li style='cursor:pointer' onclick='placeHint("+userData[i].id+" , "+'"'+userData[i].name+'"'+")'> <span class='searched-user-name'> "+userData[i].name+"</span><span class=' btn btn-xs btn-info "+type+"'>"+type+"</span></li>";
+                    var className = " btn-info ";
+                    if(userData[i].user_type == 2){type = "qa"; className=" btn-success "}
+                      hintString += "<li style='cursor:pointer' onclick='placeHint("+userData[i].id+" , "+'"'+userData[i].name+'"'+")'> <span class='searched-user-name'> "+userData[i].name+"</span><span class='btn btn-xs "+className+type+"'>"+type+"</span></li>";
                     }
                     hintString += "</ul>";
                     if(userData.length > 0){

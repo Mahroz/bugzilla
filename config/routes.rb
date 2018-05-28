@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'bugs/add'
   resources :bugs
   get '/users/password/new', to: 'error#notDeveloped'
   get 'projects/index'
@@ -8,6 +9,7 @@ Rails.application.routes.draw do
   get '/users/', to: 'users#index'
   get '/projects/:id/manage-members', to: 'projects#manage'
   post '/projects/:id/add-members', to: 'projects#addUserToProject'
+  post '/projects/:id/remove-members', to: 'projects#removeUserFromProject'
   get '/search-users/:name', to: 'users#search'
   get '/error', to: 'error#notFound'
   get '/not-developed', to: 'error#notDeveloped'

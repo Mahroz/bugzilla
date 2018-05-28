@@ -19,8 +19,34 @@ function addUserToProject(){
       data: { projectId: projectId, userId: userId }
     })
     .done(function(result) {
-      //result = $.parseJSON(result);
-      alert(result['reason']);
+      notify(result['reason']);
+    });
+  }
+}
+
+function removeMember(userid){
+  userid = parseInt(userid);
+  var projectId = parseInt( (window.location.href.split('projects/')[1]).split('/manage')[0] );
+  if(userid < 1 ){
+    window.location.reload();
+  }
+  else if(projectId < 1)
+  {
+    window.location.reload();
+  }
+  else{
+    $.ajax({
+      method: "POST",
+      url: "remove-members",
+      dataType : 'json',
+      data: { projectId: projectId, userId: userid }
+    })
+    .done(function(result) {
+      notify(result['reason']);
+      if(result['code'] == true)
+      {
+        $("#project-user-"+userid).hide();
+      }
     });
   }
 }
