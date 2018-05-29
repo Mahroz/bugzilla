@@ -2,6 +2,7 @@
 
 <h1>Bugs</h1>
 
+<% if @bugs.length > 0 %>
 <table>
   <thead>
     <tr>
@@ -10,6 +11,7 @@
       <th>Type</th>
       <th>Status</th>
       <th>Deadline</th>
+      <th>Actions</th>
     </tr>
   </thead>
 
@@ -39,9 +41,16 @@
           <% end%>
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
+        <td>
+          <input type="button" class="btn btn-xs btn-success" value="Assign Bug" onclick="assignBug(<%= bug.id %>)">
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <br>
+  <h4>No bugs found.</h4>
+<% end %>
 <br>
 <%= link_to 'Back', projects_url  , {:class => "btn btn-primary text-bold"  }%>

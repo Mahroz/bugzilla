@@ -2,7 +2,7 @@ function addUserToProject(){
   var userId = parseInt(document.getElementById("userName").dataset.userid);
   var projectId = parseInt( (window.location.href.split('projects/')[1]).split('/manage')[0] );
   if(userId < 1 ){
-    alert("Please select a customer first");
+    alert("Please select a user first");
   }
   else if(projectId < 1)
   {

@@ -36,6 +36,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
+    check_project_id
   end
 
   # GET /projects/new
@@ -139,6 +140,7 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1.json
   def destroy
     ProjectUser.where(project_id: @project.id).delete_all
+    Bug.where(project_id: @project.id).delete_all
     @project.destroy
     respond_to do |format|
       format.html { redirect_to projects_url, notice: 'Project was successfully destroyed.' }
@@ -152,6 +154,14 @@ class ProjectsController < ApplicationController
       @project = Project.find(params[:id])
     end
 
+    def check_project_id
+      @project_id = to_number(params[:id])
+      if @project_id < 1
+        redirect_to projects_url
+      elsif !ProjectUser.where(project_id: @project_id, user_id: current_user.id).exists?
+        redirect_to projects_url
+      end
+    end
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project).permit(:title, :description, :start_date)

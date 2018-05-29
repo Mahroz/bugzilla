@@ -1,7 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Bugs</h1>
+<h1>My Bugs</h1>
 
+<% if @bugs.length > 0 %>
 <table>
   <thead>
     <tr>
@@ -10,6 +11,7 @@
       <th>Type</th>
       <th>Status</th>
       <th>Deadline</th>
+      <th>Actions</th>
     </tr>
   </thead>
 
@@ -26,22 +28,34 @@
           <% end%>
         </td>
         <td>
+
+          <% @typeStatusName = "Resolved" %>
+          <% if bug.issue_type == 1 %>
+            <%  @typeStatusName = "Completed" %>
+          <% end%>
+
           <% if bug.status == 0 %>
+            <% @typeStatusName = "Started" %>
             New
           <% elsif bug.status == 1 %>
             Started
           <% else %>
-            <% if bug.issue_type == 0 %>
-              Resolved
-            <% else %>
-              Completed
-            <% end%>
+            <%= @typeStatusName%>
           <% end%>
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
+        <td>
+          <% if bug.status != 2 %>
+            <input type="button" class="btn btn-xs btn-info" value="Mark <%= @typeStatusName%>" onclick="markBug(<%= bug.id %>)">
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <br>
+  <h4>No bugs found.</h4>
+<% end %>
 <br>
 <%= link_to 'Back', projects_url  , {:class => "btn btn-primary text-bold"  }%>

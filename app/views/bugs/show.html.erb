@@ -11,13 +11,19 @@
 </p>
 
 <p>
-  <strong>Image:</strong>
-  <%= @bug.image %>
+  <% if @bug.bug_image.attached? %>
+  <!-- @bug.bug_image.present? will always return true, use attached? to check presence -->
+    <p>
+      <strong>Image:</strong>
+      <br>
+      <%= image_tag @bug.bug_image %>
+    </p>
+  <% end %>
 </p>
 
 <p>
   <strong>Type:</strong>
-  <%= @bug.type %>
+  <%= @bug.issue_type %>
 </p>
 
 <p>

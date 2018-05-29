@@ -10,6 +10,8 @@
       <th>Type</th>
       <th>Status</th>
       <th>Deadline</th>
+      <th>Creator</th>
+      <th>Developer</th>
     </tr>
   </thead>
 
@@ -39,6 +41,14 @@
           <% end%>
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
+        <td><%= bug.creator.name %></td>
+        <td>
+          <% if bug.developer.nil? %>
+              Not Assigned
+          <% else%>
+            <%= bug.developer.name %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

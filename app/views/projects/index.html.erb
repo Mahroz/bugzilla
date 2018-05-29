@@ -27,19 +27,22 @@
             <td>
               <%= link_to 'Manage Members', "projects/"+project.id.to_s+"/manage-members", {:class => "btn btn-info btn-xs"} %>
             </td>
+            <td>
+              <%= link_to 'All Bugs', "projects/"+project.id.to_s+"/all-bugs", {:class => "btn btn-primary btn-xs"} %>
+            </td>
             <td class="btn btn-danger btn-xs">
               <%= link_to 'Delete', project, method: :delete, data: { confirm: 'Are you sure?' }  %>
             </td>
           <% elsif current_user.user_type == 1 %>
             <td>
-              <%= link_to 'My Bugs', edit_project_path(project), {:class => "btn btn-info btn-xs"} %>
+              <%= link_to 'My Bugs', "projects/"+project.id.to_s+"/my-bugs", {:class => "btn btn-info btn-xs"} %>
             </td>
             <td>
-              <%= link_to 'All Bugs', edit_project_path(project), {:class => "btn btn-primary btn-xs"} %>
+              <%= link_to 'New Bugs', "projects/"+project.id.to_s+"/new-bugs", {:class => "btn btn-primary btn-xs"} %>
             </td>
           <% elsif current_user.user_type == 2 %>
             <td>
-              <%= link_to 'Report Bug', edit_project_path(project), {:class => "btn btn-warning btn-xs"} %>
+              <%= link_to 'Report Bug', "projects/"+project.id.to_s+"/report-bugs", {:class => "btn btn-warning btn-xs"} %>
             </td>
           <% end %>
         </tr>
@@ -52,4 +55,6 @@
 <br>
 <% if current_user.user_type == 0 %>
   <%= link_to 'Create New Project', new_project_path  , {:class => "btn btn-success text-bold"  }%>
+<% else %>
+  <%= link_to 'View my bugs', "my-bugs"  , {:class => "btn btn-info text-bold"  }%>
 <% end%>
