@@ -92,7 +92,6 @@ class BugsController < ApplicationController
   # GET /bugs/1.json
   def show
     is_user_authorized
-    check_project_id
   end
 
 #  def isAllowedToSee
@@ -168,7 +167,7 @@ class BugsController < ApplicationController
         redirect_to projects_url
       else
         if current_user.user_type == 0
-          if !Project.where(id: @project_id, manager_id: current_user.id).exists?
+          unless Project.where(id: @project_id, manager_id: current_user.id).exists?
             redirect_to projects_url
           end
         elsif current_user.user_type == 1
@@ -187,7 +186,11 @@ class BugsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_bug
-      @bug = Bug.find(params[:id])
+      if Bug.where(id: params[:id]).exists?
+        @bug = Bug.find(params[:id])
+      else
+        redirect_to "/my-bugs", notice: 'This bug does not exists.'
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -203,7 +206,11 @@ class BugsController < ApplicationController
     end
 
     def is_user_authorized
-      if Bug.find(params[:id]).creator_id != current_user.id
+      if current_user.user_type == 0 && Bug.find(params[:id]).project.manager_id != current_user.id
+        redirect_to "/my-bugs", notice: 'You do not have access to this bug.' + Bug.find(params[:id]).project.manager_id.to_s
+      elsif current_user.user_type == 1 && !ProjectUser.where(project_id: Bug.find(params[:id]).project.id, user_id: current_user.id).exists?
+        redirect_to "/my-bugs", notice: 'You do not have access to this bug.'
+      elsif current_user.user_type == 2 && Bug.find(params[:id]).creator_id != current_user.id
         redirect_to "/my-bugs", notice: 'You do not have access to this bug.'
       end
     end

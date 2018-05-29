@@ -19,20 +19,20 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :password %> <i>(leave blank if not changed)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %>
+    <%= f.label :password %><br />
+    <%= f.password_field :password, autocomplete: "off", placeholder: "leave blank if not changed" %>
     <% if @minimum_password_length %>
     <% end %>
   </div>
 
   <div class="field">
     <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    <%= f.password_field :password_confirmation, autocomplete: "off" , placeholder: "leave blank if not changed" %>
   </div>
 
   <div class="field">
-    <%= f.label :current_password %> <i>(to authorize)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %>
+    <%= f.label :current_password %> <br />
+    <%= f.password_field :current_password, autocomplete: "off" , placeholder: "enter current password to authorize" %>
   </div>
 
   <div class="actions">
@@ -40,6 +40,6 @@
   </div>
 <% end %>
 
-<%= link_to "Back", :back %>
+<%= link_to "Go Back", :back %>
 
 </div>
