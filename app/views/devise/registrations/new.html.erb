@@ -27,7 +27,7 @@
     <%= f.password_field :password_confirmation, autocomplete: "off" %>
   </div>
 
-  <div class="field">
+  <div class="field long-select">
     <%= f.label :user_type %><br />
     <%= f.select :user_type, options_for_select([["Manager", 0], ["Developer", 1], ["QA", 2]]) %>
   </div>
