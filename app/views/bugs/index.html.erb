@@ -10,6 +10,7 @@
       <th>Type</th>
       <th>Status</th>
       <th>Deadline</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -39,6 +40,7 @@
           <% end%>
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
+        <td><%= link_to 'View Bug', bug %></td>
       </tr>
     <% end %>
   </tbody>

@@ -12,6 +12,7 @@
       <th>Deadline</th>
       <th>Creator</th>
       <th>Developer</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -49,6 +50,7 @@
             <%= bug.developer.name %>
           <% end %>
         </td>
+        <td><%= link_to 'View Bug', bug %></td>
       </tr>
     <% end %>
   </tbody>

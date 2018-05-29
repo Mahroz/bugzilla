@@ -12,6 +12,7 @@
       <th>Status</th>
       <th>Deadline</th>
       <th>Actions</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -44,6 +45,7 @@
         <td>
           <input type="button" class="btn btn-xs btn-success" value="Assign Bug" onclick="assignBug(<%= bug.id %>)">
         </td>
+        <td><%= link_to 'View Bug', bug %></td>
       </tr>
     <% end %>
   </tbody>
