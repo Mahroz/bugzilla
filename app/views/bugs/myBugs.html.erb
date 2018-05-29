@@ -12,6 +12,7 @@
       <th>Status</th>
       <th>Deadline</th>
       <th>Actions</th>
+      <th></th>
     </tr>
   </thead>
 
@@ -49,6 +50,7 @@
             <input type="button" class="btn btn-xs btn-info" value="Mark <%= @typeStatusName%>" onclick="markBug(<%= bug.id %>)">
           <% end %>
         </td>
+        <td><%= link_to 'View Bug', bug %></td>
       </tr>
     <% end %>
   </tbody>

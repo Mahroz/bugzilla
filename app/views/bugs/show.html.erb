@@ -1,50 +1,66 @@
+<style type="text/css"> p {font-size: 16px; }</style>
 <p id="notice"><%= notice %></p>
 
-<p>
+<h3>
   <strong>Title:</strong>
-  <%= @bug.title %>
-</p>
+  <strong><%= @bug.title %></strong>
+</h3>
 
 <p>
   <strong>Deadline:</strong>
-  <%= @bug.deadline %>
-</p>
-
-<p>
-  <% if @bug.bug_image.attached? %>
-  <!-- @bug.bug_image.present? will always return true, use attached? to check presence -->
-    <p>
-      <strong>Image:</strong>
-      <br>
-      <%= image_tag @bug.bug_image %>
-    </p>
-  <% end %>
+  <strong><%= @bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></strong>
 </p>
 
 <p>
   <strong>Type:</strong>
-  <%= @bug.issue_type %>
+  <% if @bug.issue_type == 0 %>
+    Bug
+  <% else %>
+    Feature
+  <% end%>
 </p>
 
 <p>
   <strong>Status:</strong>
-  <%= @bug.status %>
+  <% if @bug.status == 0 %>
+    New
+  <% elsif @bug.status == 1 %>
+    Started
+  <% else %>
+    <% if @bug.issue_type == 0 %>
+      Resolved
+    <% else %>
+      Completed
+    <% end%>
+  <% end%>
 </p>
 
 <p>
   <strong>Project:</strong>
-  <%= @bug.project_id %>
+  <%= @bug.project.title %>
 </p>
 
 <p>
   <strong>Creator:</strong>
-  <%= @bug.creator_id %>
+  <%= @bug.creator.name %>
 </p>
 
 <p>
   <strong>Developer:</strong>
-  <%= @bug.developer_id %>
+  <% if @bug.developer.nil? %>
+      Not Assigned
+  <% else%>
+    <%= @bug.developer.name %>
+  <% end %>
 </p>
-
-<%= link_to 'Edit', edit_bug_path(@bug) %> |
-<%= link_to 'Back', bugs_path %>
+<p>
+  <% if @bug.bug_image.attached? %>
+  <!-- @bug.bug_image.present? will always return true, use attached? to check presence -->
+    <button class="btn btn-primary btn-xs" onclick="$('#imageWrap').toggle('slow')">Show Image</button>
+    <p id="imageWrap" style="display: none;">
+      <%= image_tag @bug.bug_image %>
+    </p>
+  <% end %>
+</p>
+<br><br>
+<%= link_to 'View All Bugs', bugs_path %>

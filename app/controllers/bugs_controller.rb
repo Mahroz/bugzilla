@@ -91,6 +91,7 @@ class BugsController < ApplicationController
   # GET /bugs/1
   # GET /bugs/1.json
   def show
+    is_user_authorized
     check_project_id
   end
 
