@@ -91,7 +91,18 @@ class BugsController < ApplicationController
   # GET /bugs/1
   # GET /bugs/1.json
   def show
+    check_project_id
   end
+
+#  def isAllowedToSee
+#    bugId = params[:id]
+#    if bugId < 1
+#      redirect_to projects_url
+#    end
+#    @bug = Bug.find(bugId)
+#    if current_user.user_type = 0
+#      if @bug.project_id
+#  end
 
   # GET /bugs/new
   def new
