@@ -29,6 +29,73 @@ class BugsController < ApplicationController
     @bugs = Bug.where(project_id: @project_id , developer_id: current_user.id)
   end
 
+  def show
+    authorize @bug
+    a = request.referrer
+    b = root_path
+    c = (request.referrer || root_path)
+  end
+
+  def new
+    @bug = Bug.new
+    authorize @bug
+  end
+
+  def edit
+    authorize @bug
+  end
+
+  def create
+    @bug = Bug.new(bug_params)
+    @bug.creator_id = current_user.id
+    @bug.project_id = params[:id]
+    @bug.status = 0
+
+    #If a bug with same name exists in current project
+    respond_to do |format|
+      if Bug.where(project_id: params[:id] , title: @bug.title).exists?
+        @bug.errors.add( :title , "must be unique throughout project")
+        format.html { render :new }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      elsif @bug.save
+        format.html { redirect_to @bug, notice: 'Bug was successfully created.' }
+        format.json { render :show, status: :created, location: @bug }
+      else
+        format.html { render :new }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def goToProjectsIndex
+    redirect_to projects_url
+  end
+
+  def update
+    authorize @bug
+    respond_to do |format|
+      if @bug.update(bug_params)
+        format.html { redirect_to @bug, notice: 'Bug was successfully updated.' }
+        format.json { render :show, status: :ok, location: @bug }
+      else
+        format.html { render :edit }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    authorize @bug
+    @bug.destroy
+    respond_to do |format|
+      format.html { redirect_to bugs_url, notice: 'Bug was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  #POST REQUESTS
+
+  #This Function is called by POST request to assign bug to a member
   def assignBug
     projectId = params[:projectId]
     bugId = to_number( params[:bugId] )
@@ -57,6 +124,7 @@ class BugsController < ApplicationController
   end
 
 
+  #This Function is called by POST request to mark bug status
   def markBug
     projectId = params[:projectId]
     bugId = to_number( params[:bugId] )
@@ -85,82 +153,6 @@ class BugsController < ApplicationController
       end
     else
       render json: { code: false, reason: "Invalid request." }
-    end
-  end
-
-
-
-
-  # GET /bugs/1
-  # GET /bugs/1.json
-  def show
-    authorize @bug
-    a = request.referrer
-    b = root_path
-    c = (request.referrer || root_path)
-  end
-
-  # GET /bugs/new
-  def new
-    @bug = Bug.new
-    authorize @bug
-  end
-
-  # GET /bugs/1/edit
-  def edit
-    authorize @bug
-  end
-
-  # POST /bugs
-  # POST /bugs.json
-  def create
-    @bug = Bug.new(bug_params)
-    @bug.creator_id = current_user.id
-    @bug.project_id = params[:id]
-    @bug.status = 0
-
-    #If a bug with same name exists in current project
-    respond_to do |format|
-      if Bug.where(project_id: params[:id] , title: @bug.title).exists?
-        @bug.errors.add( :title , "must be unique throughout project")
-        format.html { render :new }
-        format.json { render json: @bug.errors, status: :unprocessable_entity }
-      elsif @bug.save
-        format.html { redirect_to @bug, notice: 'Bug was successfully created.' }
-        format.json { render :show, status: :created, location: @bug }
-      else
-        format.html { render :new }
-        format.json { render json: @bug.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def goToProjectsIndex
-    redirect_to projects_url
-  end
-  # PATCH/PUT /bugs/1
-  # PATCH/PUT /bugs/1.json
-  def update
-    authorize @bug
-    respond_to do |format|
-      if @bug.update(bug_params)
-        format.html { redirect_to @bug, notice: 'Bug was successfully updated.' }
-        format.json { render :show, status: :ok, location: @bug }
-      else
-        format.html { render :edit }
-        format.json { render json: @bug.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /bugs/1
-  # DELETE /bugs/1.json
-  def destroy
-    authorize @bug
-    @bug.destroy
-    respond_to do |format|
-      format.html { redirect_to bugs_url, notice: 'Bug was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -197,6 +189,5 @@ class BugsController < ApplicationController
       bug.project_id = @project_id
       authorize bug
     end
-
 
 end
