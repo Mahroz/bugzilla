@@ -44,6 +44,9 @@
             <td>
               <%= link_to 'Report Bug', "projects/"+project.id.to_s+"/report-bugs", {:class => "btn btn-warning btn-xs"} %>
             </td>
+            <td>
+              <%= link_to 'All Bugs', "projects/"+project.id.to_s+"/all-bugs", {:class => "btn btn-primary btn-xs"} %>
+            </td>
           <% end %>
         </tr>
       <% end %>
