@@ -45,7 +45,7 @@
         <td>
           <input type="button" class="btn btn-xs btn-success" value="Assign Bug" onclick="assignBug(<%= bug.id %>)">
         </td>
-        <td><%= link_to 'View Bug', bug %></td>
+        <td><%= link_to 'View Bug', bug , {:class => "btn btn-info btn-xs"  }%></td>
       </tr>
     <% end %>
   </tbody>

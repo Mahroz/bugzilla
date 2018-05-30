@@ -6,7 +6,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    isManager? || isProjectUser?
+    (isManager? && isCurrentProjectManager?) || isProjectUser?
   end
 
   def new?

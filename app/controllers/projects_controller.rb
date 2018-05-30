@@ -108,7 +108,7 @@ class ProjectsController < ApplicationController
     @project_id = to_number(params[:projectId])
     userId = params[:userId]
     id = params[:id]
-    if id != @project_id
+    if to_number(id) != @project_id
       render json: { code: false, reason: "Invalid request." }
     elsif Project.find(id).manager_id != current_user.id
       render json: { code: false, reason: "Invalid request." }
