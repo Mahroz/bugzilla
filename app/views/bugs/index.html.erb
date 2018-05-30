@@ -2,6 +2,7 @@
 
 <h1>All Bugs</h1>
 
+<% if @bugs.length > 0 %>
 <table>
   <thead>
     <tr>
@@ -45,5 +46,10 @@
     <% end %>
   </tbody>
 </table>
+
+<% else %>
+  <br>
+  <h4>No bugs found.</h4>
+<% end %>
 <br>
 <%= link_to 'Back', projects_url  , {:class => "btn btn-primary text-bold"  }%>
