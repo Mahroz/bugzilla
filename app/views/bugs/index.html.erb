@@ -40,7 +40,7 @@
           <% end%>
         </td>
         <td><%= bug.deadline.strftime("%d-%m-%Y %I:%M %p") %></td>
-        <td><%= link_to 'View Bug', bug %></td>
+        <td><%= link_to 'View Bug', bug , {:class => "btn btn-info btn-xs"  }%></td>
       </tr>
     <% end %>
   </tbody>

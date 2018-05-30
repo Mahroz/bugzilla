@@ -5,6 +5,7 @@
   <strong>Title:</strong>
   <strong><%= @bug.title %></strong>
 </h3>
+<br><br>
 
 <p>
   <strong>Deadline:</strong>
@@ -63,4 +64,4 @@
   <% end %>
 </p>
 <br><br>
-<%= link_to 'View All Bugs', bugs_path %>
+<%= link_to 'Back', (request.referrer || root_path) , {:class => "btn btn-info btn-xs"  }%></td>
