@@ -11,4 +11,10 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name , :user_type])
     devise_parameter_sanitizer.permit(:account_update, keys: [:name ])
   end
+
+  private
+    # This is the method that'll be called if Pundit un-authorizes the user
+    def user_not_authorized
+      redirect_to((request.referrer || root_path) ,notice: "Authorization error.")
+    end
 end
