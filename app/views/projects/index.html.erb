@@ -6,7 +6,10 @@
   <table>
     <thead>
       <tr>
-        <th>Project Title</th>
+        <th>Title</th>
+        <% if current_user.user_type != 0 %>
+        <th>Manager</th>
+        <% end%>
         <th>Description</th>
         <th>Start date</th>
         <th colspan="3">Actions</th>
@@ -18,6 +21,9 @@
       <% @projects.each do |project| %>
         <tr>
           <td><%= project.title %></td>
+          <% if current_user.user_type != 0 %>
+          <td><%= project.manager.name %></td>
+          <% end%>
           <td><%= project.description %></td>
           <td><%= project.start_date %></td>
           <% if current_user.user_type == 0 %>

@@ -163,16 +163,18 @@ class BugsController < ApplicationController
       redirect_to((request.referrer || root_path) ,notice: "Authorization error.")
     end
 
+    #Converts a string to number appropriately
     def to_number(string)
       Integer(string || '')
       rescue ArgumentError
-      0
+        0
     end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_bug
-      if Bug.where(id: params[:id]).exists?
-        @bug = Bug.find(params[:id])
+      @bug = Bug.where(id: params[:id])
+      if @bug.exists?
+        @bug = @bug.first
       else
         redirect_to "/my-bugs", notice: 'This bug does not exists.'
       end
