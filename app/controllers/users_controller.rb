@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   end
 
   def search
+    authorize User
     name = params[:name]
     params = {:search_user => name}
     @users = User.filter(params)

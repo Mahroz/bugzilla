@@ -1,7 +1,6 @@
 class BugsController < ApplicationController
-  before_action :is_user_logged_in
+  before_action :authenticate_user!
   before_action :set_bug, only: [:show, :edit, :update, :destroy]
-  before_action :check_project_id, only: [:allBugs, :newBugs, :myBugs]
   skip_before_action :verify_authenticity_token, only: [:create , :assignBug , :markBug]
   # GET /bugs
   # GET /bugs.json
@@ -16,13 +15,87 @@ class BugsController < ApplicationController
   end
 
   def allBugs
+    authorizeBug
     @bugs = Bug.where(project_id: @project_id)
   end
 
   def newBugs
+    authorizeBug
     @bugs = Bug.where(project_id: @project_id , developer_id: nil)
   end
 
+  def myBugs
+    authorizeBug
+    @bugs = Bug.where(project_id: @project_id , developer_id: current_user.id)
+  end
+
+  def show
+    authorize @bug
+    a = request.referrer
+    b = root_path
+    c = (request.referrer || root_path)
+  end
+
+  def new
+    @bug = Bug.new
+    authorize @bug
+  end
+
+  def edit
+    authorize @bug
+  end
+
+  def create
+    @bug = Bug.new(bug_params)
+    @bug.creator_id = current_user.id
+    @bug.project_id = params[:id]
+    @bug.status = 0
+
+    #If a bug with same name exists in current project
+    respond_to do |format|
+      if Bug.where(project_id: params[:id] , title: @bug.title).exists?
+        @bug.errors.add( :title , "must be unique throughout project")
+        format.html { render :new }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      elsif @bug.save
+        format.html { redirect_to @bug, notice: 'Bug was successfully created.' }
+        format.json { render :show, status: :created, location: @bug }
+      else
+        format.html { render :new }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def goToProjectsIndex
+    redirect_to projects_url
+  end
+
+  def update
+    authorize @bug
+    respond_to do |format|
+      if @bug.update(bug_params)
+        format.html { redirect_to @bug, notice: 'Bug was successfully updated.' }
+        format.json { render :show, status: :ok, location: @bug }
+      else
+        format.html { render :edit }
+        format.json { render json: @bug.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    authorize @bug
+    @bug.destroy
+    respond_to do |format|
+      format.html { redirect_to bugs_url, notice: 'Bug was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  #POST REQUESTS
+
+  #This Function is called by POST request to assign bug to a member
   def assignBug
     projectId = params[:projectId]
     bugId = to_number( params[:bugId] )
@@ -50,11 +123,8 @@ class BugsController < ApplicationController
     end
   end
 
-  def myBugs
-    @bugs = Bug.where(project_id: @project_id , developer_id: current_user.id)
-  end
 
-
+  #This Function is called by POST request to mark bug status
   def markBug
     projectId = params[:projectId]
     bugId = to_number( params[:bugId] )
@@ -86,108 +156,25 @@ class BugsController < ApplicationController
     end
   end
 
-
-
-  # GET /bugs/1
-  # GET /bugs/1.json
-  def show
-    is_user_authorized
-  end
-
-#  def isAllowedToSee
-#    bugId = params[:id]
-#    if bugId < 1
-#      redirect_to projects_url
-#    end
-#    @bug = Bug.find(bugId)
-#    if current_user.user_type = 0
-#      if @bug.project_id
-#  end
-
-  # GET /bugs/new
-  def new
-    @bug = Bug.new
-  end
-
-  # GET /bugs/1/edit
-  def edit
-  end
-
-  # POST /bugs
-  # POST /bugs.json
-  def create
-    @bug = Bug.new(bug_params)
-    @bug.creator_id = current_user.id
-    @bug.project_id = params[:id]
-    @bug.status = 0
-
-    respond_to do |format|
-      if @bug.save
-        format.html { redirect_to @bug, notice: 'Bug was successfully created.' }
-        format.json { render :show, status: :created, location: @bug }
-      else
-        format.html { render :new }
-        format.json { render json: @bug.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def goToProjectsIndex
-    redirect_to projects_url
-  end
-  # PATCH/PUT /bugs/1
-  # PATCH/PUT /bugs/1.json
-  def update
-    respond_to do |format|
-      if @bug.update(bug_params)
-        format.html { redirect_to @bug, notice: 'Bug was successfully updated.' }
-        format.json { render :show, status: :ok, location: @bug }
-      else
-        format.html { render :edit }
-        format.json { render json: @bug.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /bugs/1
-  # DELETE /bugs/1.json
-  def destroy
-    @bug.destroy
-    respond_to do |format|
-      format.html { redirect_to bugs_url, notice: 'Bug was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
   private
 
-    def check_project_id
-      @project_id = to_number(params[:id])
-      if @project_id < 1
-        redirect_to projects_url
-      else
-        if current_user.user_type == 0
-          unless Project.where(id: @project_id, manager_id: current_user.id).exists?
-            redirect_to projects_url
-          end
-        elsif current_user.user_type == 1
-          if !ProjectUser.where(project_id: @project_id, user_id: current_user.id).exists?
-            redirect_to projects_url
-          end
-        end
-      end
+    # This is the method that'll be called if Pundit un-authorizes the user
+    def user_not_authorized
+      redirect_to((request.referrer || root_path) ,notice: "Authorization error.")
     end
 
+    #Converts a string to number appropriately
     def to_number(string)
       Integer(string || '')
-    rescue ArgumentError
-      0
+      rescue ArgumentError
+        0
     end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_bug
-      if Bug.where(id: params[:id]).exists?
-        @bug = Bug.find(params[:id])
+      @bug = Bug.where(id: params[:id])
+      if @bug.exists?
+        @bug = @bug.first
       else
         redirect_to "/my-bugs", notice: 'This bug does not exists.'
       end
@@ -198,26 +185,11 @@ class BugsController < ApplicationController
       params.require(:bug).permit(:title, :deadline, :issue_type, :status, :bug_image)
     end
 
-
-    def is_user_verified
-      if current_user.user_type != 2
-        redirect_to projects_url, notice: 'You do not have access to create new bugs/features.'
-      end
+    def authorizeBug
+      @project_id = to_number(params[:id])
+      bug = Bug.new
+      bug.project_id = @project_id
+      authorize bug
     end
 
-    def is_user_authorized
-      if current_user.user_type == 0 && Bug.find(params[:id]).project.manager_id != current_user.id
-        redirect_to "/my-bugs", notice: 'You do not have access to this bug.' + Bug.find(params[:id]).project.manager_id.to_s
-      elsif current_user.user_type == 1 && !ProjectUser.where(project_id: Bug.find(params[:id]).project.id, user_id: current_user.id).exists?
-        redirect_to "/my-bugs", notice: 'You do not have access to this bug.'
-      elsif current_user.user_type == 2 && Bug.find(params[:id]).creator_id != current_user.id
-        redirect_to "/my-bugs", notice: 'You do not have access to this bug.'
-      end
-    end
-
-    def is_user_logged_in
-      unless user_signed_in?
-        redirect_to new_user_session_path
-      end
-    end
 end
