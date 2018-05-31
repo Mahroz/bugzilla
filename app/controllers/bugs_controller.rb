@@ -31,9 +31,6 @@ class BugsController < ApplicationController
 
   def show
     authorize @bug
-    a = request.referrer
-    b = root_path
-    c = (request.referrer || root_path)
   end
 
   def new
