@@ -36,13 +36,13 @@ ActiveRecord::Schema.define(version: 2018_05_28_070759) do
   create_table "bugs", force: :cascade do |t|
     t.string "title"
     t.datetime "deadline"
+    t.integer "issue_type"
     t.integer "status"
     t.integer "project_id"
     t.integer "creator_id"
     t.integer "developer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "issue_type"
   end
 
   create_table "project_users", id: false, force: :cascade do |t|
