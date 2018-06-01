@@ -10,7 +10,7 @@ class BugsController < ApplicationController
     elsif current_user.user_type == 1
       @bugs = Bug.where( developer_id: current_user.id )
     elsif  current_user.user_type == 2
-      @bugs = @bugs = Bug.where( creator_id: current_user.id )
+      @bugs = Bug.where( creator_id: current_user.id )
     end
   end
 
@@ -35,6 +35,7 @@ class BugsController < ApplicationController
 
   def new
     @bug = Bug.new
+    @bug.project_id = params[:id]
     authorize @bug
   end
 
@@ -43,10 +44,7 @@ class BugsController < ApplicationController
   end
 
   def create
-    @bug = Bug.new(bug_params)
-    @bug.creator_id = current_user.id
-    @bug.project_id = params[:id]
-    @bug.status = 0
+    @bug = Bug.new(create_bug_params)
 
     #If a bug with same name exists in current project
     respond_to do |format|
@@ -113,7 +111,7 @@ class BugsController < ApplicationController
           render json: { code: false, reason: "Something went wrong. Please try again." }
         end
       else
-        render json: { code: false, reason: "This project is already assigned to a developer." }
+        render json: { code: false, reason: "This bug is already assigned to a developer." }
       end
     else
       render json: { code: false, reason: "Invalid request." }
@@ -180,6 +178,11 @@ class BugsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def bug_params
       params.require(:bug).permit(:title, :deadline, :issue_type, :status, :bug_image)
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def create_bug_params
+      params.require(:bug).permit(:title, :deadline, :issue_type, :status, :bug_image).merge(creator_id: current_user.id , status: 0 , project_id: params[:id])
     end
 
     def authorizeBug

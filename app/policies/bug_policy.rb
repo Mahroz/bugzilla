@@ -18,7 +18,7 @@ class BugPolicy < ApplicationPolicy
   end
 
   def new?
-    @user.user_type == 2
+    @user.user_type == 2 && isProjectUser?
   end
 
   def allBugs?
@@ -58,5 +58,10 @@ class BugPolicy < ApplicationPolicy
       end
     end
     return true
+  end
+
+
+  def isProjectUser?
+    ProjectUser.where(project_id: @bug.project_id, user_id: @user.id).exists?
   end
 end
